@@ -6,17 +6,21 @@ import androidx.lifecycle.ViewModel
 
 class MainViewModel : ViewModel() {
 
-    private val _nonNullableValue = MutableLiveData<String>()
-    val nonNullableValue: LiveData<String> = _nonNullableValue
+    val nonNullableValue = MutableLiveData<String>()
+    val nullableValue = MutableLiveData<String?>()
 
-    private val _nullableValue = MutableLiveData<String?>()
-    val nullableValue: LiveData<String?> = _nullableValue
+    // This slightly different syntax but probably same root issue is also an unexpected lint error
+    private val _error = MutableLiveData<String?>()
+    val error: LiveData<String?> get() = _error
 
     init {
-        // Good
-        _nonNullableValue.value = "I can never be null and the lint check should enforce this"
+        // Good :)
+        nonNullableValue.value = "I can never be null and the lint check should enforce this"
 
-        // Bad This is failing lint test as fatal but should be allowed given it is defined as nullable (i.e. <String?>)
-        _nullableValue.value = null
+        // Bad :( This is failing lint test as fatal but should be allowed given it is defined as nullable (i.e. <String?>)
+        nullableValue.value = null
+
+        // Bad :( This is failing lint test as fatal but should be allowed given it is defined as nullable (i.e. <String?>)
+        _error.value = null
     }
 }
